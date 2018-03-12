@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script type="application/javascript">
+        // 根据状态，proxy需要跳转的新域名
+        function getOrigin(state) {
+            var code = getPublicCode();
+            if (state === "development") {
+                return "http://" + code + ".member-d.vkcommerce.com";
+            } else if (state === "alpha") {
+                return "http://" + code + ".member-t.vkcommerce.com";
+            } else if (state === "beta") {
+                return "http://" + code + ".member-demo.vkcommerce.com";
+            } else {
+                return "http://" + code + ".member.vkcommerce.com";
+            }
+        }
+
+        function getPublicCode() {
+            const hostname = window.location.hostname;
+            return hostname.split(".")[0];
+        }
+
+        var queryStr = window.location.search.slice(1);
+        var queryArr = queryStr.split("&");
+        var queryObj = {};
+        for (var i = 0; i < queryArr.length; i++) {
+            var queries = queryArr[i].split("=");
+            queryObj[queries[0]] = queries[1];
+        }
+        console.log("queryObj", queryObj);
+        var origin = getOrigin(queryObj["state"]);
+        console.log("origin", origin);
+        const targetLogin = origin + "/login?code=" + queryObj["code"] + "&state=" + queryObj["state"];
+        console.log("targetLogin", targetLogin);
+        window.location.replace(targetLogin);
+    </script>
+</head>
+
+<body>
+
+<div class="weui-loading_toast">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-loading weui-icon_toast"></i>
+        <p class="weui-toast__content">登录加载中</p>
+    </div>
+</div>
+
+</body>
+
+</html>
